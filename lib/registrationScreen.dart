@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easypay/BeneficiaryManagementScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,9 +10,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  late File profilePhoto;
-  late File photoID;
-  late File selfieWithID;
+  File? profilePhoto;
+  File? photoID;
+  File? selfieWithID;
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +59,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              
               ElevatedButton(
                 onPressed: () {
                   handlePhotoUpload('profile');
                 },
                 child: Text('Upload Profile Photo'),
-                
                 style: ElevatedButton.styleFrom(
-                 foregroundColor: Colors.white, backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
               ),
               ElevatedButton(
@@ -75,7 +75,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
                 child: Text('Upload Photo ID'),
                 style: ElevatedButton.styleFrom(
-                 foregroundColor: Colors.white, backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
               ),
               ElevatedButton(
@@ -84,7 +85,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
                 child: Text('Upload Selfie with ID'),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
               ),
               SizedBox(height: 20),
@@ -107,8 +109,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               SizedBox(height: 20),
               Padding(
-  padding: EdgeInsets.only(bottom: 20),
-),
+                padding: EdgeInsets.only(bottom: 20),
+              ),
               Text(
                 'OTP Validation',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -127,35 +129,53 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 onPressed: handleFinalApproval,
                 child: Text('Verify'),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
               ),
+              // SizedBox(height: 20),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => BeneficiaryManagementScreen()),
+              //     );
+              //   },
+              //   child: Text('Go to Beneficiary Management'),
+              //   style: ElevatedButton.styleFrom(
+              //     foregroundColor: Colors.white,
+              //     backgroundColor: Colors.green,
+              //   ),
+              // ),
             ],
           ),
         ),
       ),
     );
   }
+
   Future<void> handlePhotoUpload(String type) async {
     final picker = ImagePicker();
-    PickedFile? pickedFile;
+    XFile? pickedFile;
 
     if (type == 'profile' || type == 'id') {
-      pickedFile = (await picker.pickImage(source: ImageSource.gallery)) as PickedFile?;
+      pickedFile = await picker.pickImage(source: ImageSource.gallery);
     } else if (type == 'selfie') {
-      pickedFile = (await picker.pickImage(source: ImageSource.camera)) as PickedFile?;
+      pickedFile = await picker.pickImage(source: ImageSource.camera);
     }
 
     if (pickedFile != null) {
       File file = File(pickedFile.path);
 
-      if (type == 'profile') {
-        profilePhoto = file;
-      } else if (type == 'id') {
-        photoID = file;
-      } else if (type == 'selfie') {
-        selfieWithID = file;
-      }
+      setState(() {
+        if (type == 'profile') {
+          profilePhoto = file;
+        } else if (type == 'id') {
+          photoID = file;
+        } else if (type == 'selfie') {
+          selfieWithID = file;
+        }
+      });
     }
   }
 
@@ -179,7 +199,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void grantApproval() {
     print('Photo ID matches selfie. Approval granted.');
-    // Add code to proceed to next step or screen
+   
   }
 
   void denyApproval() {
